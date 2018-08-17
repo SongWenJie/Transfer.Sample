@@ -28,12 +28,25 @@ namespace Transfer.Sample.DDD.DominTest
         {
             MockAccountRepository.Setup(m => m.GetAccount(123))
                 .Returns(new Account(123, 100, new List<TransferHistory>()));
-            MockAccountRepository.Setup(m => m.GetAccount(123))
+            MockAccountRepository.Setup(m => m.GetAccount(456))
                 .Returns(new Account(456, 500, new List<TransferHistory>()));
 
             Assert.Throws<NotSupportedException>(()
                =>
             { TransferService.TransferMoney(456, 123, 200); });
+        }
+
+        [Test]
+        public void Test_TransferMoney_MoneyIsEnough()
+        {
+            var s = MockAccountRepository.Setup(m => m.GetAccount(123))
+                .Returns(new Account(123, 100, new List<TransferHistory>()));
+            MockAccountRepository.Setup(m => m.GetAccount(456))
+                .Returns(new Account(456, 500, new List<TransferHistory>()));
+
+            Assert.DoesNotThrow(()
+                =>
+            { TransferService.TransferMoney(456, 123, 50); });
         }
     }
 }
